@@ -102,8 +102,27 @@ def load_train_data(image_path, load_size=286, fine_size=256, is_testing=False):
             img_A = np.fliplr(img_A)
             img_B = np.fliplr(img_B)
     else:
-        img_A = scipy.misc.imresize(img_A, [fine_size, fine_size])
-        img_B = scipy.misc.imresize(img_B, [fine_size, fine_size])
+        landmark_map_A = []
+        landmark_map_B = []
+        for i in range(14):
+            if i < 13:
+                cur_img_A = img_A[:, i * unit_width: (i + 1) * unit_width, 0]
+                cur_img_A = scipy.misc.imresize(cur_img_A, [fine_size, fine_size])
+                landmark_map_A.append(cur_img_A)
+                cur_img_B = img_B[:, i * unit_width: (i + 1) * unit_width, 0]
+                cur_img_B = scipy.misc.imresize(cur_img_B, [fine_size, fine_size])
+                landmark_map_B.append(cur_img_B)
+            else:  # i=13
+                cur_img_A = img_A[:, i * unit_width: (i + 1) * unit_width, :]
+                cur_img_A = scipy.misc.imresize(cur_img_A, [fine_size, fine_size])
+                landmark_map_A.append(cur_img_A)
+                cur_img_B = img_B[:, i * unit_width: (i + 1) * unit_width, :]
+                cur_img_B = scipy.misc.imresize(cur_img_B, [fine_size, fine_size])
+                landmark_map_B.append(cur_img_B)
+    
+        img_A = np.dstack(tuple(landmark_map_A))
+        img_B = np.dstack(tuple(landmark_map_B))
+ 
 
     img_A = img_A/127.5 - 1.
     img_B = img_B/127.5 - 1.
