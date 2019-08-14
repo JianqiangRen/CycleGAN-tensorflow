@@ -13,7 +13,7 @@ from module import generator_resnet
 from collections import namedtuple
 
 parser = argparse.ArgumentParser(description='')
-
+parser.add_argument('--ckpt', dest='ckpt', type=str)
 parser.add_argument('--batch_size', dest='batch_size', type=int, default=1, help='# images in batch')
 parser.add_argument('--fine_size', dest='fine_size', type=int, default=256, help='then crop to this size')
 parser.add_argument('--ngf', dest='ngf', type=int, default=64, help='# of gen filters in first conv layer')
@@ -56,6 +56,6 @@ def freeze(ckpt_path):
 
 
 if __name__ == '__main__':
-    ckpt_path = 'checkpoint/left_eye_256/cyclegan.model-19002'
+    ckpt_path = args.ckpt
     freeze(ckpt_path)
     print('freeze done')

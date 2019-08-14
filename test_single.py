@@ -14,9 +14,6 @@ parser=argparse.ArgumentParser()
 parser.add_argument("--ckpt",dest='ckpt',type=str,required=True)
 parser.add_argument("--input",dest='input',type=str)
 parser.add_argument("--output",dest='output',type=str)
-
-
-
 args=parser.parse_args()
 
 def load_test_data(image_path, fine_size=256):
