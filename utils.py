@@ -44,9 +44,9 @@ class ImagePool(object):
 
 def load_test_data(image_path, fine_size=256):
     img = imread(image_path)
-    unit_width = img.shape[1] / 14
+    unit_width = int(img.shape[1] / 15)
     assert unit_width == img.shape[0]
-
+    print("unit_width:{}".format(unit_width))
     landmark_map = []
     for i in range(14):
         if i < 13:
@@ -66,9 +66,10 @@ def load_train_data(image_path, load_size=286, fine_size=256, is_testing=False):
     img_A = imread(image_path[0])
     img_B = imread(image_path[1])
     
-    unit_width = img_A.shape[1] /14
+    unit_width = int(img_A.shape[1] /15)
     assert unit_width == img_A.shape[0]
     
+    print("unit_width:{}".format(unit_width))
     
     if not is_testing:
         landmark_map_A = []
