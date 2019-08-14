@@ -44,16 +44,54 @@ class ImagePool(object):
 
 def load_test_data(image_path, fine_size=256):
     img = imread(image_path)
-    img = scipy.misc.imresize(img, [fine_size, fine_size])
+    unit_width = img.shape[1] / 14
+    assert unit_width == img.shape[0]
+
+    landmark_map = []
+    for i in range(14):
+        if i < 13:
+            cur_img_A = img[:, i * unit_width: (i + 1) * unit_width, 0]
+            cur_img_A = scipy.misc.imresize(cur_img_A, [fine_size, fine_size])
+            landmark_map.append(cur_img_A)
+        else:  # i=13
+            cur_img_A = img[:, i * unit_width: (i + 1) * unit_width, :]
+            cur_img_A = scipy.misc.imresize(cur_img_A, [fine_size, fine_size])
+            landmark_map.append(cur_img_A)
+
+    img = np.dstack(tuple(landmark_map))
     img = img/127.5 - 1
     return img
 
 def load_train_data(image_path, load_size=286, fine_size=256, is_testing=False):
     img_A = imread(image_path[0])
     img_B = imread(image_path[1])
+    
+    unit_width = img_A.shape[1] /14
+    assert unit_width == img_A.shape[0]
+    
+    
     if not is_testing:
-        img_A = scipy.misc.imresize(img_A, [load_size, load_size])
-        img_B = scipy.misc.imresize(img_B, [load_size, load_size])
+        landmark_map_A = []
+        landmark_map_B = []
+        for i in range(14):
+            if i < 13:
+                cur_img_A = img_A[:, i*unit_width: (i+1)*unit_width,0]
+                cur_img_A = scipy.misc.imresize(cur_img_A, [load_size, load_size])
+                landmark_map_A.append(cur_img_A)
+                cur_img_B = img_B[:, i*unit_width: (i+1)*unit_width,0]
+                cur_img_B = scipy.misc.imresize(cur_img_B, [load_size, load_size])
+                landmark_map_B.append(cur_img_B)
+            else:  # i=13
+                cur_img_A = img_A[:, i*unit_width: (i+1)*unit_width,:]
+                cur_img_A = scipy.misc.imresize(cur_img_A, [load_size, load_size])
+                landmark_map_A.append(cur_img_A)
+                cur_img_B = img_B[:, i * unit_width: (i + 1) * unit_width, :]
+                cur_img_B = scipy.misc.imresize(cur_img_B, [load_size, load_size])
+                landmark_map_B.append(cur_img_B)
+        
+        img_A = np.dstack(tuple(landmark_map_A))
+        img_B = np.dstack(tuple(landmark_map_B))
+ 
         h1 = int(np.ceil(np.random.uniform(1e-2, load_size-fine_size)))
         w1 = int(np.ceil(np.random.uniform(1e-2, load_size-fine_size)))
         img_A = img_A[h1:h1+fine_size, w1:w1+fine_size]
