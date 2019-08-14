@@ -43,7 +43,7 @@ if __name__=="__main__":
     
     print(np.min(output_value))
     
-    cv2.imwrite(args.output, output_value)
+    cv2.imwrite(os.path.join(args.output,  os.path.basename(args.input)), np.column_stack(((content_feed[0] +1.0)*127.5,output_value ))  )
     print('saved {}'.format(args.output))
     sess.close()
 
